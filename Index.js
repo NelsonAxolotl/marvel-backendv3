@@ -16,7 +16,7 @@ const User = require("./models/user");
 
 const BASE_URL = 'https://lereacteur-marvel-api.herokuapp.com';
 const validApiKey = process.env.VALID_API_KEY;
-// Clé API valide
+// Clé API valide //
 
 
 //EXTRA//
