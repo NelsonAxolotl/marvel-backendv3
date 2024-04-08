@@ -19,7 +19,7 @@ const validApiKey = process.env.VALID_API_KEY;
 // Clé API valide //
 
 
-//EXTRA//
+//EXTRA/////
 // Récupérer les informations d'un personnage spécifique
 app.get('/character/:characterId', async (req, res) => {
     const { characterId } = req.params;
