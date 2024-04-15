@@ -34,14 +34,11 @@ app.get('/character/:characterId', async (req, res) => {
 });
 
 //liste des personnages//
-// ex http://localhost:3000/characters?apiKey=2yP9TZZSBoTZ2418
-
 app.get('/characters', async (req, res) => {
     const apiKey = req.query.apiKey; // la clé API de ma requête
 
     console.log('Clé API reçue:', apiKey);
-    // console.log('skip:', skip);
-    // console.log('Limit:', limit);
+
     try {
         const name = req.query.name || "";
         const skip = req.query.skip || "0";
@@ -60,7 +57,7 @@ app.get('/characters', async (req, res) => {
 
 
 // Récupérer la liste des comics
-//ex http://localhost:3000/comics?apiKey=2yP9TZZSBoTZ2418
+
 app.get('/comics', async (req, res) => {
     const apiKey = req.query.apiKey; // la clé API de ma requête
     try {
@@ -80,7 +77,6 @@ app.get('/comics', async (req, res) => {
 });
 
 // Récupérer les comics contenant un personnage spécifique
-// ex:http://localhost:3000/comics/5fcf91f4d8a2480017b91453?apiKey=2yP9TZZSBoTZ2418
 
 app.get('/comics/:characterId', async (req, res) => {
     const { characterId } = req.params;
@@ -101,7 +97,7 @@ app.get('/comic/:comicId', async (req, res) => {
     const { comicId } = req.params;
     try {
         const response = await axios.get(`${BASE_URL}/comic/${comicId}?apiKey=${process.env.API_KEY}`
-            // params: { apiKey: validApiKey }
+
         );
         console.log(response.data);
         res.json(response.data);
