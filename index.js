@@ -115,7 +115,7 @@ app.get("/favorites/:userId", async (req, res) => {
 
   try {
     // Trouver l'utilisateur par son ID
-    const user = await User.findById(userId).populate("favorites");
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -124,7 +124,7 @@ app.get("/favorites/:userId", async (req, res) => {
     // Récupérer les favoris de l'utilisateur
     const favorites = user.favorites;
 
-    return res.status(200).json({ favorites });
+    return res.status(200).json({ favorites: favorites });
   } catch (error) {
     console.error(error);
     res
