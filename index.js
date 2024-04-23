@@ -129,7 +129,7 @@ app.get("/favorites/:userId", async (req, res) => {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des favoris" });
+      .json({ message: "Erreur fatale lors de la récupération des favoris" });
   }
 });
 
