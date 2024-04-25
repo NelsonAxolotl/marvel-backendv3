@@ -124,6 +124,8 @@ app.get("/favorites/:userId", async (req, res) => {
     // Récupérer les favoris de l'utilisateur
     const favorites = user.favorites;
 
+    console.log(favorites);
+
     return res.status(200).json({ favorites: favorites });
   } catch (error) {
     console.error(error);
@@ -230,11 +232,10 @@ app.post("/user/favorites/add", async (req, res) => {
       return res.status(200).json({ message: "Favori ajouté avec succès" });
     } else {
       return res
-        .status(400)
+        .status(201)
         .json({ message: "Ce personnage est déjà en favori" });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Erreur lors de l'ajout du favori" });
   }
 });
@@ -262,16 +263,16 @@ app.post("/user/favorites/remove", async (req, res) => {
       return res.status(200).json({ message: "Favori supprimé avec succès" });
     } else {
       return res
-        .status(400)
+        .status(201)
         .json({ message: "Ce personnage n'est pas un favori" });
     }
   } catch (error) {
-    console.error(error);
     res
       .status(500)
       .json({ message: "Erreur lors de la suppression du favori" });
   }
 });
+
 /*-----CHECKING ROUTE------*/
 
 app.get(`/`, (req, res) => {
