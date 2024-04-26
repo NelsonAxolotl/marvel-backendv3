@@ -123,15 +123,23 @@ app.get("/favorites/:userId", async (req, res) => {
 
     // Récupérer les favoris de l'utilisateur
     const favorites = user.favorites;
+    const favoritesDetails = [];
 
-    console.log(favorites);
+    // Récupérer les détails de chaque favori en faisant une requête pour chaque ID
+    for (let i = 0; i < favorites.length; i++) {
+      const favoriteId = favorites[i];
+      const response = await axios.get(`${BASE_URL}/character/${favoriteId}`, {
+        params: { apiKey: validApiKey },
+      });
+      favoritesDetails.push(response.data);
+    }
 
-    return res.status(200).json({ favorites: favorites });
+    res.status(200).json({ favorites: favoritesDetails });
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Erreur fatale lors de la récupération des favoris" });
+      .json({ message: "Erreur lors de la récupération des favoris" });
   }
 });
 
@@ -265,6 +273,65 @@ app.post("/user/favorites/remove", async (req, res) => {
       return res
         .status(201)
         .json({ message: "Ce personnage n'est pas un favori" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la suppression du favori" });
+  }
+});
+
+app.post("/user/addFavorite", async (req, res) => {
+  const { userId, comicId } = req.body;
+
+  try {
+    // Trouver l'utilisateur par son ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si le comic est déjà dans les favoris de l'utilisateur
+    if (!user.favorites.includes(comicId)) {
+      // Ajouter le comic à la liste des favoris de l'utilisateur
+      user.favorites.push(comicId);
+
+      // Enregistrer les modifications
+      await user.save();
+
+      return res.status(200).json({ message: "comic ajouté avec succès" });
+    } else {
+      return res.status(201).json({ message: "Ce comic est déjà en favori" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de l'ajout du favori" });
+  }
+});
+
+app.post("/user/removeFavorite", async (req, res) => {
+  const { userId, comicId } = req.body;
+
+  try {
+    // Trouver l'utilisateur par son ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si le personnage est dans les favoris de l'utilisateur
+    const index = user.favorites.indexOf(comicId);
+    if (index !== -1) {
+      // Supprimer le personnage de la liste des favoris de l'utilisateur
+      user.favorites.splice(index, 1);
+
+      // Enregistrer les modifications
+      await user.save();
+
+      return res.status(200).json({ message: "Favori supprimé avec succès" });
+    } else {
+      return res.status(201).json({ message: "Ce comic n'est pas un favori" });
     }
   } catch (error) {
     res
