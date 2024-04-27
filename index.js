@@ -110,7 +110,40 @@ app.get("/comic/:comicId", async (req, res) => {
   }
 });
 
-app.get("/favorites/:userId", async (req, res) => {
+app.get("/favorites/character/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Trouver l'utilisateur par son ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Récupérer les favoris de l'utilisateur
+    const favorites = user.favorites;
+    const favoritesDetails = [];
+
+    // Récupérer les détails de chaque favori en faisant une requête pour chaque ID
+    for (let i = 0; i < favorites.length; i++) {
+      const favoriteId = favorites[i];
+      const response = await axios.get(`${BASE_URL}/character/${favoriteId}`, {
+        params: { apiKey: validApiKey },
+      });
+      favoritesDetails.push(response.data);
+    }
+
+    res.status(200).json({ favorites: favoritesDetails });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des favoris" });
+  }
+});
+
+app.get("/favorites/comic/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -218,7 +251,7 @@ app.post("/login", async (req, res) => {
 });
 /*---FAVORIS-----*/
 
-app.post("/user/favorites/add", async (req, res) => {
+app.post("/user/favorites/character/add", async (req, res) => {
   const { userId, characterId } = req.body;
 
   try {
@@ -248,7 +281,7 @@ app.post("/user/favorites/add", async (req, res) => {
   }
 });
 
-app.post("/user/favorites/remove", async (req, res) => {
+app.post("/user/favorites/character/remove", async (req, res) => {
   const { userId, characterId } = req.body;
 
   try {
@@ -281,7 +314,7 @@ app.post("/user/favorites/remove", async (req, res) => {
   }
 });
 
-app.post("/user/addFavorite", async (req, res) => {
+app.post("/user/favorites/comic/add", async (req, res) => {
   const { userId, comicId } = req.body;
 
   try {
@@ -309,7 +342,7 @@ app.post("/user/addFavorite", async (req, res) => {
   }
 });
 
-app.post("/user/removeFavorite", async (req, res) => {
+app.post("/user/favorites/comic/remove", async (req, res) => {
   const { userId, comicId } = req.body;
 
   try {
