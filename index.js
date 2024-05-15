@@ -31,7 +31,7 @@ app.get("/character/:characterId", async (req, res) => {
     res.status(500).json({
       message: "Erreur lors de la récupération des informations du personnage",
     });
-  }
+  } //
 });
 
 //liste des personnages//
